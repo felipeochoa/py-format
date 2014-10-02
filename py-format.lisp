@@ -142,15 +142,28 @@ format-spec is the formatting string to use for the field, and conversion is one
   (apply #'concatenate
          (cons 'string
                (loop
+                  with manual-numbering = nil
+                  with auto-numbering = nil
                   for (literal-text field-name format-spec conversion)
                   in (py-formatter-parse-format-string format-string)
+                  for field-number from 0
                   when literal-text collect literal-text
                   when field-name
                   collect (py-format-method
                            (py-formatter-convert-field
-                            (py-formatter-get-field field-name args)
+                            (py-formatter-get-field
+                             (if (string= field-name "") (write-to-string field-number) field-name)
+                             args)
                             conversion)
-                           (py-vformat format-spec args (the fixnum (1- recursion-depth))))))))
+                           (py-vformat format-spec args (the fixnum (1- recursion-depth))))
+                  and do (progn
+                           (if (string= field-name "")
+                               (if manual-numbering
+                                   (error "Cannot switch from manual field specification to automatic field numbering")
+                                   (setf auto-numbering t))
+                               (if auto-numbering
+                                   (error "Cannot switch from automatic field numbering to manual field specification")
+                                   (setf manual-numbering t))))))))
 
 (defun py-format (format-string &rest args)
   "Formats a python-style format string"
