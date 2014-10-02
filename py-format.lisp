@@ -1,10 +1,8 @@
 
 (in-package :py-format)
 
-(defmethod py-format-method (obj format-spec)
-  (if (string= format-spec "")
-      (py-str obj)
-      (format nil (if format-spec obj))))
+(defmethod py-format (obj (format-spec string))
+  (py-str obj))
 
 (defmethod py-str (obj)
   (format nil "~A" obj))
@@ -149,7 +147,7 @@ format-spec is the formatting string to use for the field, and conversion is one
                   for field-number from 0
                   when literal-text collect literal-text
                   when field-name
-                  collect (py-format-method
+                  collect (py-format
                            (py-formatter-convert-field
                             (py-formatter-get-field
                              (if (string= field-name "") (write-to-string field-number) field-name)
@@ -165,6 +163,6 @@ format-spec is the formatting string to use for the field, and conversion is one
                                    (error "Cannot switch from automatic field numbering to manual field specification")
                                    (setf manual-numbering t))))))))
 
-(defun py-format (format-string &rest args)
+(defun py-str-format (format-string &rest args)
   "Formats a python-style format string"
   (py-vformat format-string args 2))
