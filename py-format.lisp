@@ -134,7 +134,7 @@ format-spec is the formatting string to use for the field, and conversion is one
   (let* ((fields (py-formatter-field-name-split field-name))
          (first (car fields))
          (rest (cdr fields))
-         (obj (nth (parse-integer (cdr first)) args)))
+         (obj (elt args (parse-integer (cdr first)))))
     (loop
        for (is-attr . next) in rest
        do (setf obj (if is-attr (slot-value obj next)
