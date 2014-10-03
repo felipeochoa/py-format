@@ -137,8 +137,12 @@ format-spec is the formatting string to use for the field, and conversion is one
          (obj (elt args (parse-integer (cdr first)))))
     (loop
        for (is-attr . next) in rest
-       do (setf obj (if is-attr (slot-value obj next)
-                        (if (listp obj) (nth (parse-integer next) obj) (gethash next obj)))))
+       do (setf obj (if is-attr
+                        (slot-value obj (intern (string-upcase next)))
+                        (py-getitem
+                         obj
+                         (handler-case (parse-integer next)
+                           ('parse-integer-not-integer-string () next))))))
     obj))
 
 (defun py-vformat (format-string args recursion-depth)
