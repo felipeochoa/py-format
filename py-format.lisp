@@ -10,6 +10,13 @@
 (defmethod py-repr (obj)
   (format nil "~S" obj))
 
+(defmethod py-getitem (obj key)
+  (elt obj key))
+
+(defmethod py-getitem ((obj hash-table) key)
+  (multiple-value-bind (ret foundp) (gethash key obj)
+    (if foundp ret (error (format nil "Key error: ~S" key)))))
+
 (defun py-formatter-convert-field (obj conversion)
   "Conversion must be one of 's' or 'r', equivalent to calling str(obj) or repr(obj)"
   (if conversion
