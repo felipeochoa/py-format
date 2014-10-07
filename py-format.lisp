@@ -107,7 +107,10 @@ format-spec is the formatting string to use for the field, and conversion is one
                    (progn (setf base-ptr literal-end) '(nil nil nil)))))))
 
 (defun py-formatter-field-name-split (field-name)
-  "Given a field name, parse it into getattrs and getitems."
+  "Given a field name, parse it into getattrs and getitems.
+Returns a list of cons cells (is-attr . name), where is-attr is `t` if the next item
+is an attribute (i.e., dot-access) and nil otherwise; and name is the string name of
+the item or attribute."
   (declare (type string field-name))
   ; abcd.efg[hijk].lmno
   ; ^    ^   ^     ^
