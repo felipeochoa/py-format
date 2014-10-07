@@ -47,7 +47,7 @@ so.
 
 ## Usage
 
-### py-str-format [function]
+### [function] py-str-format
 
 ```lisp
 (py-str-format format-string &rest args)
@@ -114,7 +114,7 @@ This method corresponds to Python's `__str__` magic method, which is
 called by [Python's builtin function `str`]
 (https://docs.python.org/3.4/library/functions.html#func-str). It
 returns a string. It is called by `py-str-format` when the field
-conversion `s` is specified. (E.g. `"{0!s}")
+conversion `s` is specified. (E.g. `"{0!s}"`)
 
 * `obj` is the object to convert to a string.
 
@@ -131,7 +131,7 @@ This method corresponds to Python's `__repr__` magic method, which is
 called by [Python's builtin function `repr`]
 (https://docs.python.org/3.4/library/functions.html#repr). It
 returns a string. It is called by `py-str-format` when the field
-conversion `r` is specified. (E.g. `"{0!r}")
+conversion `r` is specified. (E.g. `"{0!r}"`)
 
 * `obj` is the object to convert to a string representation.
 
