@@ -125,6 +125,12 @@
   (assert-error 'simple-error (py-format::py-formatter-field-name-split "0[abc."))
   (assert-error 'simple-error (py-format::py-formatter-field-name-split "0[abc")))
 
+(defclass temp-class ()
+  ((temp-slot
+    :initarg :temp-slot)
+   (#:temp-slot
+    :initarg :s-temp-slot)))
+
 (define-test py-formatter-get-field
   (assert-equal #\a (py-format::py-formatter-get-field "0" "abc"))
   (assert-equal #\b (py-format::py-formatter-get-field "1" "abc"))
@@ -132,13 +138,12 @@
   (assert-equal 3 (py-format::py-formatter-get-field "2" '(1 2 3)))
   (assert-equal 2 (py-format::py-formatter-get-field "0[1]" '((1 2 3) "abc")))
   (assert-equal #\c (py-format::py-formatter-get-field "1[2]" '((1 2 3) "abc")))
-  (let ((temp-class (ccl::ensure-class-for-defclass
-                     'temp-class
-                     :direct-superclasses 'nil
-                     :direct-slots '((:name temp-slot :initargs ':temp-slot)))))
-    (assert-equal "c" (py-format::py-formatter-get-field
-                       "0.temp-slot"
-                       (list (make-instance temp-class :temp-slot "c")))))
+  (assert-equal "c" (py-format::py-formatter-get-field
+                     "0.temp-slot"
+                     (list (make-instance 'temp-class :temp-slot "c" :s-temp-slot "d"))))
+  (assert-error 'simple-error (py-format::py-formatter-get-field
+                               "0.other-slot"
+                               (list (make-instance 'temp-class :temp-slot "c" :s-temp-slot "d"))))
   (let ((temp-hash (make-hash-table :test 'equal)))
     (setf (gethash "coconut" temp-hash) 2)
     (assert-equal 2 (py-format::py-formatter-get-field "0[coconut]" (list temp-hash)))
