@@ -124,14 +124,12 @@ format-spec is the formatting string to use for the field, and conversion is one
                  (loop
                     for c across field-name
                     for i from 0
-                    for delim-c = (or (eql c #\[) (eql c #\.))
                     with in-brackets = nil
                     when (eql c #\])
                     do (if in-brackets (setf in-brackets nil) (error "Unmatched ']' in format string"))
-                    when (and in-brackets delim-c)
-                    do (error "Missing ']' in format string")
-                    when delim-c
-                    collect (cons (1+ i) (setf in-brackets (eql c #\[)))))))
+                    when (if in-brackets (eql c #\]) (or (eql c #\[) (eql c #\.)))
+                    collect (cons (1+ i) (setf in-brackets (eql c #\[)))
+                    finally (when in-brackets (error "Unmatched '[' in format string"))))))
 
 (defun py-formatter-get-field (field-name args)
   "Given a field name, find the object it references"
