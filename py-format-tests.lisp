@@ -5,7 +5,7 @@
 (in-package #:py-format-tests)
 
 (define-test py-format
-  (assert-equal "ABC" (py-format:py-format 'abc ""))
+  (assert-equal "ABC" (py-format:py-format :abc ""))
   (assert-equal "1" (py-format:py-format 1 ""))
   (assert-equal "NIL" (py-format:py-format nil ""))
   (assert-equal "(1 2 3)" (py-format:py-format '(1 2 3) ""))
@@ -19,7 +19,7 @@
   (assert-equal "string" (py-format:py-str "string")))
 
 (define-test py-repr
-  (assert-equal "ABC" (py-format:py-repr 'abc))
+  (assert-equal ":ABC" (py-format:py-repr :abc))
   (assert-equal "1" (py-format:py-repr 1))
   (assert-equal "NIL" (py-format:py-repr nil))
   (assert-equal "(1 2 3)" (py-format:py-repr '(1 2 3)))
@@ -36,13 +36,13 @@
     (assert-error 'key-error (py-format:py-getitem string-to-square "12"))))
 
 (define-test py-formatter-convert-field
-  (assert-equal "ABC" (py-format::py-formatter-convert-field 'abc #\s))
+  (assert-equal "ABC" (py-format::py-formatter-convert-field :abc #\s))
   (assert-equal "1" (py-format::py-formatter-convert-field 1 #\s))
   (assert-equal "NIL" (py-format::py-formatter-convert-field nil #\s))
   (assert-equal "(1 2 3)" (py-format::py-formatter-convert-field '(1 2 3) #\s))
   (assert-equal "string" (py-format::py-formatter-convert-field "string" #\s))
 
-  (assert-equal "ABC" (py-format::py-formatter-convert-field 'abc #\r))
+  (assert-equal ":ABC" (py-format::py-formatter-convert-field :abc #\r))
   (assert-equal "1" (py-format::py-formatter-convert-field 1 #\r))
   (assert-equal "NIL" (py-format::py-formatter-convert-field nil #\r))
   (assert-equal "(1 2 3)" (py-format::py-formatter-convert-field '(1 2 3) #\r))
