@@ -30,11 +30,12 @@ so.
 ## Features
 
 * The format string uses Python-like syntax, where dots (`.`) indicate
-  variable access and brackets (`[]`) indicate list indexing or
+  field access and brackets (`[]`) indicate list indexing or
   hashtable lookups.
 
 * Supports Python's automatic field numbering, so you can do
-  `(py-str-format "{}: {}-{}" 'ni 'ni 'ni)`
+  `(py-str-format "{}-{}; {}-{}" 'one 'swallow 'two 'swallows); =>
+  "ONE-SWALLOW; TWO-SWALLOWS"`
 
 * The exported methods provide hooks into the formatting mechanism and
   allow extending the format specification language like in Python
@@ -42,10 +43,6 @@ so.
 * Uses braces `{}` instead of tildes `~` for formatting commands,
   which in my experience appear less frequently and tend to be more
   readable.
-
-* The code contains type declarations in the performance critical
-  areas, so compiling with the appropriate optmization declarations
-  should yield very speedy operations.
 
 
 ## Usage
@@ -57,8 +54,7 @@ so.
 ```
 
 This function corresponds to Python's `str.format`. It returns a
-string. It is called on every object using the format spec specified
-on the field.
+string.
 
 * `format-string` is a string formatted according to [Python's syntax]
   (https://docs.python.org/3.4/library/string.html#format-string-syntax).
@@ -69,7 +65,7 @@ on the field.
     (e.g. `obj.field`), uses lisp's `slot-value` to access fields on
     an object. Therefore `"{0.silly-walks}"` would refer to the field
     `silly-walks` on the first object in the argument list
-    (`(slot-value (nth 0 args) field)`).
+    (`(slot-value (nth 0 args) silly-walks)`).
 
   * **Sequence indexing**, using the bracket `[]` syntax (e.g.
     `obj[index]`), uses lisp's `nth` to return an item from a list.
@@ -80,7 +76,7 @@ on the field.
     `obj[key]`), uses lisp's `gethash` to return the associated value
     from a lisp hashtable. Therefore `"{0[silly-walks]}"` would refer
     to the value stored under `"silly-walks"` under the first object
-    in the argument list (`(gethash "silly-walks" (nth 0 args))`).
+    in the argument list (`(gethash "silly-walks" (nth 0 args))`).[1]
 
   These operations can be combined for deeply-nested access. (e.g.
   `0.ministry[of][silly].walks`)
@@ -139,8 +135,15 @@ conversion `r` is specified. (E.g. `"{0!r}")
 
 * `obj` is the object to convert to a string representation.
 
-The default implementation just calls `(format t "~S" obj)`
+The default implementation calls `(format t "~S" obj)`
 
+## Footnotes
+
+1. Note: since Python's formatting syntax does not parse quotes
+   inside brackets, using numeric arguments leads to ambiguity. E.g.,
+   for a hashtable, does `"{0[1]}"` refer to the value stored under
+   the integer `1` or the string `"1"`? Python resolves it by
+   assuming that everything that looks like an integer is an integer.
 
 ## To-do
 
