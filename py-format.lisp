@@ -13,9 +13,13 @@
 (defmethod py-getitem (obj key)
   (elt obj key))
 
+(define-condition key-error (error)
+  ((key :initarg :key))
+  (:report (lambda (condition stream) (format stream "Key error: ~S" (slot-value condition 'key)))))
+
 (defmethod py-getitem ((obj hash-table) key)
   (multiple-value-bind (ret foundp) (gethash key obj)
-    (if foundp ret (error (format nil "Key error: ~S" key)))))
+    (if foundp ret (signal 'key-error :key key))))
 
 (defun py-formatter-convert-field (obj conversion)
   "Conversion must be one of 's' or 'r', equivalent to calling str(obj) or repr(obj)"
