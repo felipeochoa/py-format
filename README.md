@@ -17,9 +17,9 @@ Sample use:
 
 This small library aims to replicate the functionality of Python's
 built-in `str.format` method. To do so, it exports one function,
-`py-str-format`, and three methods, `py-format`, `py-str`, and
-`py-repr`, corresponding to Python's `str.format`, `__format__`,
-`__str__`, and `__repr__`.
+`py-str-format`, and four methods, `py-format`, `py-str`, `py-repr`,
+and `py-getitem`, corresponding to Python's `str.format`, `__format__`,
+`__str__`, `__repr__`, and `__getitem__`.
 
 Currently, only positional arguments to `py-str-format` are
 supported. This is a feature I would like to add, but since Common
@@ -74,7 +74,7 @@ on the field.
   * **Sequence indexing**, using the bracket `[]` syntax (e.g.
     `obj[index]`), uses lisp's `nth` to return an item from a list.
     Therefore `"{0[2]}"` would refer to the third item in the first
-    object in the argument list (`(nth 2 (nth 0 args))`).
+    object in the argument list (`(elt (nth 0 args) 2)`).
 
   * **Hashtable access**, using the bracket `[]` syntax (e.g.
     `obj[key]`), uses lisp's `gethash` to return the associated value
@@ -149,5 +149,3 @@ The default implementation just calls `(format t "~S" obj)`
   Mini-Language"]
   ([https://docs.python.org/3.4/library/string.html#format-specification-mini-language),
   especially for numeric types
-* Create `py-getitem` to properly index lists and vectors and access
-  hashtables (equivalent to Python dictionaries)
