@@ -5,17 +5,17 @@
   (py-str obj))
 
 (defmethod py-str (obj)
-  (format nil "~A" obj))
+  (princ-to-string obj))
 
 (defmethod py-repr (obj)
-  (format nil "~S" obj))
+  (prin1-to-string obj))
 
 (defmethod py-getitem (obj key)
   (elt obj key))
 
 (define-condition key-error (error)
   ((key :initarg :key))
-  (:report (lambda (condition stream) (format stream "Key error: ~S" (slot-value condition 'key)))))
+  (:report (lambda (condition stream) (princ (py-format "Key error: {0.key}"  condition) stream))))
 
 (defmethod py-getitem ((obj hash-table) key)
   (multiple-value-bind (ret foundp) (gethash key obj)
