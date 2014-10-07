@@ -146,7 +146,7 @@ format-spec is the formatting string to use for the field, and conversion is one
                         (py-getitem
                          obj
                          (handler-case (parse-integer next)
-                           ('parse-integer-not-integer-string () next))))))
+                           (parse-error () next))))))
     obj))
 
 (defun py-vformat (format-string args recursion-depth)
