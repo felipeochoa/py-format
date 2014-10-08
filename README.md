@@ -21,11 +21,6 @@ built-in `str.format` method. To do so, it exports one function,
 `str.format`, `getattr`, `__format__`, `__str__`, `__repr__`, and
 `__getitem__`.
 
-Currently, only positional arguments to `py-str-format` are
-supported. This is a feature I would like to add, but since Common
-Lisp doesn't (as far as I know) have a great way to mix positional and
-keyword arguments, it will require some design choices before doing
-so.
 
 ## Features
 
@@ -76,7 +71,7 @@ string.
     `obj[key]`), uses lisp's `gethash` to return the associated value
     from a lisp hashtable. Therefore `"{0[silly-walks]}"` would refer
     to the value stored under `"silly-walks"` under the first object
-    in the argument list (`(gethash "silly-walks" (nth 0 args))`).[1]
+    in the argument list (`(gethash "silly-walks" (nth 0 args))`).
 
   These operations can be combined for deeply-nested access. (e.g.
   `0.ministry[of][silly].walks`)
@@ -152,21 +147,6 @@ conversion `r` is specified. (E.g. `"{0!r}"`)
 
 The default implementation calls `(format t "~S" obj)`
 
-## Footnotes
-
-1. Note: since Python's formatting syntax does not parse quotes
-   inside brackets, using numeric arguments leads to ambiguity. E.g.,
-   for a hashtable, does `"{0[1]}"` refer to the value stored under
-   the integer `1` or the string `"1"`? Python resolves it by
-   assuming that everything that looks like an integer is an integer.
-
-## To-do
-
-* Currently the default implementation of `py-format` ignores the
-  format spec. Need to implement the ["Format Specification
-  Mini-Language"]
-  ([https://docs.python.org/3.4/library/string.html#format-specification-mini-language),
-  especially for numeric types
 ## See also
 
 * Drew McDermott's [Eliminating `FORMAT` from Lisp]
@@ -174,3 +154,27 @@ The default implementation calls `(format t "~S" obj)`
   on `FORMAT` and describes a more lispy solution, available from
   [his website](http://www.cs.yale.edu/homes/dvm/)
 
+## Shortcomings
+
+1. Currently, only positional arguments to `py-str-format` are
+   supported. This is a feature I would like to add, but since Common
+   Lisp doesn't (as far as I know) have a great way to mix positional
+   and keyword arguments, it will require some design choices before
+   doing so.
+2. Since Python's formatting syntax does not parse quotes inside
+   brackets, using numeric arguments leads to ambiguity. E.g., for a
+   hashtable, does `"{0[1]}"` refer to the value stored under the
+   integer `1` or the string `"1"`? Python resolves it by assuming
+   that everything that looks like an integer is an integer. (And so
+   does `py-format`).
+3. Since lisp slots are accessed using symbols and not strings, any
+   given string may refer to a variety of slots. (See
+   [this stackoverflow question](http://stackoverflow.com/questions/26245105/)
+   for an example.) `py-str-format` resolves this ambiguity by taking
+   the first slot with a matching name.
+4. Currently the default implementation of `py-format` ignores the
+   format spec. Need to implement the
+   ["Format Specification Mini-Language"]
+   (https://docs.python.org/3.4/library/string.html#format-specification-mini-language),
+   especially for numeric types.
+5. Most errors are `simple-error`s, and there's no option for restarts.
