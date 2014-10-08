@@ -167,3 +167,10 @@ The default implementation calls `(format t "~S" obj)`
   Mini-Language"]
   ([https://docs.python.org/3.4/library/string.html#format-specification-mini-language),
   especially for numeric types
+## See also
+
+* Drew McDermott's [Eliminating `FORMAT` from Lisp]
+  (http://www.cs.yale.edu/homes/dvm/format-stinks.html) has a diatribe
+  on `FORMAT` and describes a more lispy solution, available from
+  [his website](http://www.cs.yale.edu/homes/dvm/)
+
