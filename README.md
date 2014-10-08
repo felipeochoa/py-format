@@ -17,9 +17,10 @@ Sample use:
 
 This small library aims to replicate the functionality of Python's
 built-in `str.format` method. To do so, it exports one function,
-`py-str-format`, and four methods, `py-format`, `py-str`, `py-repr`,
-and `py-getitem`, corresponding to Python's `str.format`, `__format__`,
-`__str__`, `__repr__`, and `__getitem__`.
+`py-str-format`, and five methods, `py-getattr`, `py-format`,
+`py-str`, `py-repr`, and `py-getitem`, corresponding to Python's
+`str.format`, `getattr`, `__format__`, `__str__`, `__repr__`, and
+`__getitem__`.
 
 Currently, only positional arguments to `py-str-format` are
 supported. This is a feature I would like to add, but since Common
@@ -83,6 +84,21 @@ string.
 
 * `args` are the arguments that will be used by the function as
   specified above
+
+### [method] py-getattr
+
+```lisp
+(py-getattr obj attr-name)
+```
+
+This method corresponds to Python's `getattr` function. It returns an
+object.
+
+* `obj` is the object whose slots we wish to access. The default
+  method is not specialized to any type of object.
+* `attr-name` is specialized to `string` and contains the name of the
+  slot to read. The string will match slots by checking the slot
+  names' values under `princ`.
 
 ### [method] py-format
 

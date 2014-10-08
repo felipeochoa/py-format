@@ -4,6 +4,12 @@
 
 (in-package #:py-format-tests)
 
+(defclass temp-class ()
+  ((temp-slot
+    :initarg :temp-slot)
+   (#:temp-slot
+    :initarg :s-temp-slot)))
+
 (define-test py-format
   (assert-equal "ABC" (py-format:py-format :abc ""))
   (assert-equal "1" (py-format:py-format 1 ""))
@@ -34,6 +40,11 @@
     (assert-equal 100 (py-format:py-getitem string-to-square "10"))
     (assert-error 'key-error (py-format:py-getitem string-to-square 2))
     (assert-error 'key-error (py-format:py-getitem string-to-square "12"))))
+
+(define-test py-getattr
+  (let ((inst (make-instance 'temp-class :temp-slot 1 :s-temp-slot 2)))
+    (assert-equal 1 (py-getattr inst "temp-slot"))
+    (assert-error 'simple-error (py-getattr inst "other-slot"))))
 
 (define-test py-formatter-convert-field
   (assert-equal "ABC" (py-format::py-formatter-convert-field :abc #\s))
@@ -124,12 +135,6 @@
   (assert-error 'simple-error (py-format::py-formatter-field-name-split "0abc]"))
   (assert-error 'simple-error (py-format::py-formatter-field-name-split "0[abc."))
   (assert-error 'simple-error (py-format::py-formatter-field-name-split "0[abc")))
-
-(defclass temp-class ()
-  ((temp-slot
-    :initarg :temp-slot)
-   (#:temp-slot
-    :initarg :s-temp-slot)))
 
 (define-test py-formatter-get-field
   (assert-equal #\a (py-format::py-formatter-get-field "0" "abc"))

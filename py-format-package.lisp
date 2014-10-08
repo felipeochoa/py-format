@@ -1,4 +1,4 @@
 
 (defpackage :py-format
-  (:use :common-lisp)
-  (:export py-str-format py-format py-str py-repr py-getitem key-error))
+  (:use :closer-common-lisp :closer-mop)
+  (:export py-str-format py-format py-str py-repr py-getitem py-getattr key-error))

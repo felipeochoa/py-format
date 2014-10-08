@@ -21,6 +21,15 @@
   (multiple-value-bind (ret foundp) (gethash key obj)
     (if foundp ret (signal 'key-error :key key))))
 
+(defmethod py-getattr (obj (attr string))
+  "Try to extract the slot value of an object given the slot name as a string"
+  (loop
+     for slot in (mapcar #'closer-mop:slot-definition-name (closer-mop:class-direct-slots (class-of obj)))
+     with up-attr = (string-upcase attr)
+     do (when (string= up-attr (princ-to-string slot))
+          (return (slot-value obj slot)))
+     finally (error "No slot matching ~A" attr)))
+
 (defun py-formatter-convert-field (obj conversion)
   "Conversion must be one of 's' or 'r', equivalent to calling str(obj) or repr(obj)"
   (if conversion
@@ -143,7 +152,7 @@ the item or attribute."
     (loop
        for (is-attr . next) in rest
        do (setf obj (if is-attr
-                        (slot-value obj (intern (string-upcase next)))
+                        (py-getattr obj next)
                         (py-getitem
                          obj
                          (handler-case (parse-integer next)
