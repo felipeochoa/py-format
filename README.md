@@ -8,8 +8,7 @@ system.
 Sample use:
 
 ```lisp
-(load "py-format-package.lisp") ; has defpackage
-(load "py-format.lisp")
+(asdf:load-system :py-format)
 (let ((temp '(HELLO WORLD)))
      (py-format:py-str-format "{0[0]}-{0[1]}" temp))
 ; => "HELLO-WORLD"
